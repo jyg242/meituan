@@ -16,7 +16,7 @@
         @mouseenter='sover'
         @mouseleave='sout'>
         <template
-          v-for="(item,idx) in jyg.child">
+          v-for="(item,idx) in curdetail.child">
           <h4 :key="idx">{{ item.title }}</h4>
           <span
           v-for="v in item.child"
@@ -30,7 +30,6 @@ export default {
     data(){
     return {
       kind:'',
-      jyg:'',
       menu:[{
         type:'food',
         name:'美食',
@@ -55,12 +54,11 @@ export default {
       }]
     }
   },
-  // computed:{
-  //   curdetail(){
-  //     return 
-  //       this.menu.filter(item=>item.type===this.kind)[0]    
-  //   }
-  // },
+  computed:{
+    curdetail(){
+      return  this.menu.filter(item=>item.type===this.kind)[0]    
+    }
+  },
   methods:{
     mouseleave(){
       let self=this;
@@ -72,8 +70,8 @@ export default {
       this.kind=e.target.querySelector('i').className
       console.log(this.kind)
       //计算属性用不了只能进行强行赋值的方法
-      this.jyg=this.menu.filter(item=>item.type===this.kind)[0]
-      console.log(this.jyg)
+      // this.jyg=this.menu.filter(item=>item.type===this.kind)[0]
+      // console.log(this.jyg)
     },
     sover(){
       clearTimeout(this._timer)
