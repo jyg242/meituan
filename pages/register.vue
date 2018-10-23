@@ -119,11 +119,53 @@
         layout: 'blank',
         methods:{
             sendMsg(){
-                console.log('测试')
-            },
-            register(){
+              console.log(1)
+                const self=this;
+                let namePass
+                let emailPass
+                // 倒计时不够60s无法执行
+                if(self.timerid){
+                  return false
+                }
+                // 获取ruleform对象验证name
+                this.$refs['ruleForm'].validateField('name',(valid)=>{
+                  namePass=valid
+                })
+                self.statusMsg=''
+                // 如何name没有通过验证
+                if(namePass){
+                  return false
+                }
+                // 获取ruleform对象验证eamil
+                this.$refs['ruleForm'].validateField('email',(valid)=>{
+                  emailPass=valid
+                })
+                // 如果用户名和密码都通过表单验证了发送axios请求邮箱验证
+                if(!namePass && !emailPass){
+                  self.$axios.post('http://127.0.0.1:3000/users/verify',{
+                    //对中文进行编码
+                    username:encodeURIComponent(self.ruleForm.name),
+                    email:self.ruleForm.email
+                  }).then(({status,data})=>{
+                    if(status===200&&data&&data.code==0){
+                      let count=60;
+                      self.statusMsg=`验证码已发送，剩余${count--}秒`
+                      self.timerid=setInterval(function(){
+                        self.statusMsg=`验证码已发送，剩余${count--}秒`
+                      if(count===0){
+                        clearInterval(self.timerid)
+                        }
+                      },1000)
+                    }else{
+                      self.statusMsg=data.msg
+                    }
+                  })
+                }
+              },
+                register:function(){
 
-            }
+                }
+            
         }
     }
 </script>

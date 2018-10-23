@@ -1,5 +1,5 @@
 export default{
-    //设置数据库,数据库名称student
+    //设置数据库地址,数据库名称student
     dbs:'mongodb://127.0.0.1:27017/student',
     //配置redis
     redis:{
@@ -12,7 +12,7 @@ export default{
             return 6379
         }
     },    
-    // 配置smtp
+    // 配置smtp服务
     smtp:{
         // 设置smtp主机
         get host(){

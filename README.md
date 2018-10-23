@@ -20,3 +20,15 @@ $ npm run generate
 ```
 
 For detailed explanation on how things work, checkout [Nuxt.js docs](https://nuxtjs.org).
+
+
+## 补充
+#安装 brew install redis
+
+      启动 redis-server
+
+#安装 brew install mongodb
+
+      启动
+
+

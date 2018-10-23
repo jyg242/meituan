@@ -1,23 +1,35 @@
+// ---这里相当于users的路由器---
+
+// 引入koa-ruter模块
 import Router from 'koa-router';
+// reids让验证码和每个人对应上
 import Redis from 'koa-redis'
+// nodemailer模块用SMTP发邮件模块
 import nodeMailer from 'nodemailer'
+// 导入用户列表数据模型
 import User from '../dbs/models/users'
+// 导入登录验证中间件
 import Passport from './utils/passport'
+// 导入email配置
 import Email from '../dbs/config'
+// 导入axios
 import axios from './utils/axios'
 
+// 创建路由对象并定义前缀
 let router = new Router({prefix: '/users'})
-
+// 获取redid客户端
 let Store = new Redis().client
-
+// -----------------用户注册路由
 router.post('/signup', async (ctx) => {
   const {username, password, email, code} = ctx.request.body;
-
+  // code是smtp发出去的随机验证码 expire是验证码的有效时间
   if (code) {
+      // 取出redis在nodemail发邮件时存在code、expire中的hash值
     const saveCode = await Store.hget(`nodemail:${username}`, 'code')
     const saveExpire = await Store.hget(`nodemail:${username}`, 'expire')
     if (code === saveCode) {
       if (new Date().getTime() - saveExpire > 0) {
+        // 如已经过期返回
         ctx.body = {
           code: -1,
           msg: '验证码已过期，请重新尝试'
@@ -36,6 +48,7 @@ router.post('/signup', async (ctx) => {
       msg: '请填写验证码'
     }
   }
+  // 注册判断账号是否已注册
   let user = await User.find({username})
   if (user.length) {
     ctx.body = {
@@ -66,7 +79,7 @@ router.post('/signup', async (ctx) => {
     }
   }
 })
-
+// -----------------用户登录路由
 router.post('/signin', async (ctx, next) => {
   return Passport.authenticate('local', function(err, user, info, status) {
     if (err) {
@@ -91,9 +104,10 @@ router.post('/signin', async (ctx, next) => {
     }
   })(ctx, next)
 })
-
+// -----------------验证码路由
 router.post('/verify', async (ctx, next) => {
   let username = ctx.request.body.username
+  // 获取验证码过期时间
   const saveExpire = await Store.hget(`nodemail:${username}`, 'expire')
   if (saveExpire && new Date().getTime() - saveExpire < 0) {
     ctx.body = {
@@ -102,29 +116,39 @@ router.post('/verify', async (ctx, next) => {
     }
     return false
   }
+  // node使用smtp服务发送邮件
   let transporter = nodeMailer.createTransport({
     service: 'qq',
     auth: {
+      // config里配置smtp中发送邮件的用户名和密码
       user: Email.smtp.user,
       pass: Email.smtp.pass
     }
-  })
+  }) 
+  // 邮件发送的内容和接受方式
   let ko = {
     code: Email.smtp.code(),
     expire: Email.smtp.expire(),
+    // 接收方方
     email: ctx.request.body.email,
     user: ctx.request.body.username
   }
+  // 邮件中显示的内容
   let mailOptions = {
     from: `"认证邮件" <${Email.smtp.user}>`,
+    // 收件人
     to: ko.email,
-    subject: '《慕课网高仿美团网全栈实战》注册码',
-    html: `您在《慕课网高仿美团网全栈实战》课程中注册，您的邀请码是${ko.code}`
+    // 邮件主题
+    subject: '蒋亚光个人项目网站注册码',
+    // 邮件内容
+    html: `您在蒋亚光个人项目网站中注册验证码是${ko.code}，有效时间60秒。`
   }
+  // 发送邮件
   await transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       return console.log(error)
     } else {
+      // 成功发送邮件时 在redis中存储对应的的hash值
       Store.hmset(`nodemail:${ko.user}`, 'code', ko.code, 'expire', ko.expire, 'email', ko.email)
     }
   })
@@ -133,9 +157,11 @@ router.post('/verify', async (ctx, next) => {
     msg: '验证码已发送，可能会有延时，有效期1分钟'
   }
 })
-
+// -----------------注销路由
 router.get('/exit', async (ctx, next) => {
+  // 注销
   await ctx.logout()
+  // 验证是否成功注销
   if (!ctx.isAuthenticated()) {
     ctx.body = {
       code: 0
@@ -146,10 +172,12 @@ router.get('/exit', async (ctx, next) => {
     }
   }
 })
-
+// -----------------获取用户名路由
 router.get('/getUser', async (ctx) => {
+  // 判断是否是登录状态
   if (ctx.isAuthenticated()) {
     const {username, email} = ctx.session.passport.user
+    // 返回登录状态
     ctx.body={
       user:username,
       email
