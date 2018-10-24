@@ -57,6 +57,7 @@ router.post('/signup', async (ctx) => {
     }
     return
   }
+  // mongdb增加数据
   let nuser = await User.create({username, password, email})
   if (nuser) {
     let res = await axios.post('/users/signin', {username, password})

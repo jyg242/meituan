@@ -38,15 +38,45 @@
     
 </template>
 <script>
+import CrytoJS from 'crypto-js'
     export default{
         layout:'blank',
         data(){
             return{
+                
+                checked:'',
                 username:'',
                 password:'',
                 error:''
             }
-        }
+        },
+        methods:{
+            login(){
+                let self=this;
+                self.$axios.post('http://127.0.0.1:3000/users/signin',{
+                    username:window.encodeURIComponent(self.username),
+                    password:CrytoJS.MD5(self.password).toString()
+
+                }).then(({status,data})=>{
+                    if(status===200){
+                        if(data&&data.code===0){
+                            location.href='/'
+                        }else{
+                            self.error=data.msg
+                            // 登录失败提示信息定时清除
+                            setTimeout(function(){
+                            self.error=''
+                          },1500)
+                        }
+                    }else{
+                        self.error=`服务器登录出错`
+                        setTimeout(function(){
+                            self.error=''
+                          },1500)
+                    }
+                })
+            }
+    }     
     } 
 </script>
 <style lang="scss">

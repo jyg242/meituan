@@ -29,6 +29,7 @@ For detailed explanation on how things work, checkout [Nuxt.js docs](https://nux
 
 #安装 brew install mongodb
 
-      启动
+      启动 sudo mongod
 
 
+f345fd3516adfb6e108e139e614756dc

@@ -12,20 +12,17 @@
           v-if="isHotPlace"
           class="hotPlace">
             <dt>热门搜索</dt>
-            <dd v-for="(item,idx) in hotPlace" :key="idx">{{item}}</dd>           
+            <dd v-for="(item,idx) in $store.state.home.hotplace.slice(0,5)" :key="idx">{{item.name}}</dd>           
           </dl>
           <dl 
           v-if="isSearchList"
           class="searchList">
-            <dd v-for="(item,idx) in searchList" :key="idx">{{item}}</dd>
+            <dd v-for="(item,idx) in searchList" :key="idx">{{item.name}}</dd>
           </dl>
         </div>
         <p class="suggest">
-          <a href="#">故宫博物院</a>
-          <a href="#">故宫博物院</a>
-          <a href="#">故宫博物院</a>
-          <a href="#">故宫博物院</a>
-          <a href="#">故宫博物院</a>       
+          <a href="#" v-for=' (item,idx) in $store.state.home.hotplace.slice(0,5)' :key="idx">{{item.name}}</a>
+                
         </p>
         <ul class="nav">
           <li>
@@ -56,13 +53,14 @@
   </div>
 </template>
 <script>
+import _ from 'lodash'
 export default {
   data(){
     return{
       isFocus:false,
       search:'',
-      hotPlace:['火锅','羊肉串','麻辣烫'],
-      searchList:['故宫','天坛','天安门']
+      hotPlace:[],
+      searchList:[]
     }
   },
   computed:{
@@ -84,10 +82,23 @@ export default {
         self.isFocus=false
       },200)
     },
-    input(){
-      console.log('input')
+    // 延时触发
+    input:_.debounce(async function(){
+        let self=this
+        let city=self.$store.state.geo.position.city.replace('市','')
+        console.log(city)
+        self.searchList=[]
+        let {status,data:{top}}=await self.$axios.get('http://127.0.0.1:3000/search/top',{
+          params:{
+            input:self.search,
+            city
+          }
+        })
+        
+        self.searchList=top.slice(0,10)
+      },300)
     }
-  }
+  
 }
 </script>
 <style>

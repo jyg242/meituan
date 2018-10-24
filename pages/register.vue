@@ -75,6 +75,8 @@
   </div>
 </template>
 <script>
+// 引入md5加密模块
+import CryptoJS from 'crypto-js'
  export default{
         data(){
             return {
@@ -93,7 +95,7 @@
                           required:true,type:'string',message:'请输入昵称',trigger:'blur'
                       }],
                       email:[{
-                          required:true,type:'email',message:'请输入昵称',trigger:'blur'
+                          required:true,type:'email',message:'请输入邮箱',trigger:'blur'
                       }],
                       pwd:[{
                           required:true,message:'创建密码',trigger:'blur'
@@ -118,6 +120,7 @@
                 },
         layout: 'blank',
         methods:{
+          // 发送验证码方法
             sendMsg(){
               console.log(1)
                 const self=this;
@@ -127,7 +130,7 @@
                 if(self.timerid){
                   return false
                 }
-                // 获取ruleform对象验证name
+                // 获取ruleform对象验证name的校验规则是否通过，没通过返回true
                 this.$refs['ruleForm'].validateField('name',(valid)=>{
                   namePass=valid
                 })
@@ -136,7 +139,7 @@
                 if(namePass){
                   return false
                 }
-                // 获取ruleform对象验证eamil
+                // 获取ruleform对象验证eamil的校验规则是否通过
                 this.$refs['ruleForm'].validateField('email',(valid)=>{
                   emailPass=valid
                 })
@@ -154,6 +157,7 @@
                         self.statusMsg=`验证码已发送，剩余${count--}秒`
                       if(count===0){
                         clearInterval(self.timerid)
+                        self.statusMsg=''
                         }
                       },1000)
                     }else{
@@ -162,10 +166,35 @@
                   })
                 }
               },
+          // 注册提交方法
                 register:function(){
-
-                }
-            
+                  let self=this;
+                  // 对ruleForm对象所有属性规则进行验证，全部通过返回true
+                  this.$refs['ruleForm'].validate((valid)=>{
+                    if(valid){
+                      self.$axios.post('http://127.0.0.1:3000/users/signup',{
+                        username:window.encodeURIComponent(self.ruleForm.name),
+                        password:CryptoJS.MD5(self.ruleForm.pwd).toString(),
+                        email:self.ruleForm.email,
+                        code:self.ruleForm.code
+                      }).then(({status,data})=>{
+                        if(status===200){
+                          if(data&&data.code===0){
+                            location.href='/login'
+                          }else{
+                            self.error=data.msg
+                            }
+                          }else{
+                            self.error=`服务器出错，错误码：${status}`
+                          }
+                          // 定时清空erro错误提示
+                          setTimeout(function(){
+                            self.error=''
+                          },1500)            
+                      })
+                    }
+                  })
+                }   
         }
     }
 </script>
