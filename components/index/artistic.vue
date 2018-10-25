@@ -2,14 +2,14 @@
   <section class="m-istyle">
     <dl @mouseover='over'>
       <dt>有格调</dt>
-      <dd kind='kind'>全部</dd>
-      <dd kind='part'>约会寄出</dd>
-      <dd kind='spa'>丽人SPA</dd>
-      <dd kind='movie'>电影演出</dd>
-      <dd kind='travel'>品质出游</dd>
+      <dt kind='kind' keyword='all' :class="{active:kind==='all'}">全部</dt>
+      <dd kind='part' keyword='美食' :class="{active:kind==='part'}">约会寄出</dd>
+      <dd kind='spa'  keyword='丽人' :class="{active:kind==='spa'}">丽人SPA</dd>
+      <dd kind='movie' keyword='电影' :class="{active:kind==='movie'}">电影演出</dd>
+      <dd kind='travel' keyword='旅游' :class="{active:kind==='travel'}">品质出游</dd>
     </dl>
     <ul class="ibody">
-      <li v-for="(item,idx) in curdetail" :key="idx">
+      <li v-for="item in curdetail" :key="item.title">
         <el-card shadow="never" :body-style="{ padding: '0px' }">
           <img :src='item.img' alt="">
           <ul class="cbody">
@@ -28,84 +28,77 @@ export default {
     return{
       kind: 'all',
       list: {
-        all: [],
-        part: [{
-                title:'测试',
-                pos:'测试2',
-                price:50,
-                img:"//p1.meituan.net/merchantpic/910ff5d171dbf65452cc33fff6c86f86341227.jpg@240w_180h_1e_1c_1l|watermark=1&&r=2&p=9&x=2&y=2&relative=1&o=20|368w_208h_1e_1c"}],
-        spa: [{
-                title:'测试',
-                pos:'测试2',
-                price:50,
-                img:"//p1.meituan.net/merchantpic/910ff5d171dbf65452cc33fff6c86f86341227.jpg@240w_180h_1e_1c_1l|watermark=1&&r=2&p=9&x=2&y=2&relative=1&o=20|368w_208h_1e_1c"},
-                { 
-                title:'测试',
-                pos:'测试2',
-                price:50,
-                img:"//p1.meituan.net/merchantpic/910ff5d171dbf65452cc33fff6c86f86341227.jpg@240w_180h_1e_1c_1l|watermark=1&&r=2&p=9&x=2&y=2&relative=1&o=20|368w_208h_1e_1c"
-                }],
-        movie: [{
-                title:'测试',
-                pos:'测试2',
-                price:50,
-                img:"//p1.meituan.net/merchantpic/910ff5d171dbf65452cc33fff6c86f86341227.jpg@240w_180h_1e_1c_1l|watermark=1&&r=2&p=9&x=2&y=2&relative=1&o=20|368w_208h_1e_1c"},
-                { 
-                title:'测试',
-                pos:'测试2',
-                price:50,
-                img:"//p1.meituan.net/merchantpic/910ff5d171dbf65452cc33fff6c86f86341227.jpg@240w_180h_1e_1c_1l|watermark=1&&r=2&p=9&x=2&y=2&relative=1&o=20|368w_208h_1e_1c"
-                },{ 
-                title:'测试',
-                pos:'测试2',
-                price:50,
-                img:"//p1.meituan.net/merchantpic/910ff5d171dbf65452cc33fff6c86f86341227.jpg@240w_180h_1e_1c_1l|watermark=1&&r=2&p=9&x=2&y=2&relative=1&o=20|368w_208h_1e_1c"
-                }],
-        travel: [{
-                title:'测试',
-                pos:'测试2',
-                price:50,
-                img:"//p1.meituan.net/merchantpic/910ff5d171dbf65452cc33fff6c86f86341227.jpg@240w_180h_1e_1c_1l|watermark=1&&r=2&p=9&x=2&y=2&relative=1&o=20|368w_208h_1e_1c"},
-                { 
-                title:'测试',
-                pos:'测试2',
-                price:50,
-                img:"//p1.meituan.net/merchantpic/910ff5d171dbf65452cc33fff6c86f86341227.jpg@240w_180h_1e_1c_1l|watermark=1&&r=2&p=9&x=2&y=2&relative=1&o=20|368w_208h_1e_1c"
-                },{ 
-                title:'测试',
-                pos:'测试2',
-                price:50,
-                img:"//p1.meituan.net/merchantpic/910ff5d171dbf65452cc33fff6c86f86341227.jpg@240w_180h_1e_1c_1l|watermark=1&&r=2&p=9&x=2&y=2&relative=1&o=20|368w_208h_1e_1c"
-                },
-                { 
-                title:'测试',
-                pos:'测试2',
-                price:50,
-                img:"//p1.meituan.net/merchantpic/910ff5d171dbf65452cc33fff6c86f86341227.jpg@240w_180h_1e_1c_1l|watermark=1&&r=2&p=9&x=2&y=2&relative=1&o=20|368w_208h_1e_1c"
-                }]
-      }
-      
-    }
+        all:[],
+        part:[],
+        spa:[],
+        movie:[],
+        travel:[]
+      }  
+    } 
   },
 
   computed:{
     curdetail(){
-    
       return this.list[this.kind]
     }
   },
+  async mounted(){
+    let self=this;
+    let {status,data:{count,pois}}=await self.$axios.get('http://127.0.0.1:3000/search/resultsByKeywords',{
+      params:{
+        keyword:'景点',
+        city:self.$store.state.geo.position.city
+      }
+    })
+    if(status===200&&count>0){
+      let r= pois.filter(item=>item.photos.length).map(item=>{
+        return {
+          title:item.name,
+          pos:item.type.split(';')[0],
+          price:item.biz_ext.cost||'暂无',
+          img:item.photos[0].url,
+          url:'//abc.com'
+        }
+      })
+      self.list[self.kind]=r.slice(0,9)
+    }else{
+      self.list[self.kind]=[]
+    }
+  },
   methods:{
-    over(e){
-      let str=e.target.getAttribute('kind')
-      if(typeof str==='string'){
-      this.kind = str}
-      console.log(this.kind)}
-      
-    },
-  created() {
-    this.kind='spa'
-  },  
-  }
+    over:async function (e) {
+      let dom=e.target
+      let tag=dom.tagName.toLowerCase()
+      let self=this
+      if(tag==='dd'){
+        this.kind=dom.getAttribute('kind')
+        let keyword=dom.getAttribute('keyword')
+        let {status,data:{count,pois}}=await self.$axios.get('http://127.0.0.1:3000/search/resultsByKeyWords',{
+          params:{
+            keyword,
+            city:self.$store.state.geo.position.city
+          }
+        })
+        console.log(pois,status,count)
+        if(status===200&&count>0){
+          
+          let r=pois.filter(item=>item.photos.length).map(item=>{
+            return {
+              title:item.name,
+              pos:item.type.split(';')[0],
+              price:item.biz_ext.cost||'暂无',
+              img:item.photos[0].url,
+              url:"//abc.com"
+            }
+          })
+          
+          self.list[self.kind]=r.slice(0,9)
+        }else{
+          self.list[self.kind]=[]
+        }
+      }
+    }
+  }}
 
 </script>
 <style lang="scss">

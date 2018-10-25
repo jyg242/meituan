@@ -19,7 +19,7 @@ router.get('/top',async (ctx)=>{
         }
     })
     ctx.body={top:status===200?top:[]}
-    console.log(top)
+    
     
 })
 // 热门搜索
@@ -32,10 +32,25 @@ router.get('/hotplace',async (ctx)=>{
         }
     })
     ctx.body={top:status===200?result:[]}
-    console.log(result)
+    
     
 })
-
+//artistic
+router.get('/resultsByKeyWords',async (ctx)=>{
+    const {city,keyword}=ctx.query;
+    let {status,data:{count,pois}}=await axios.get(`http://cp-tools.cn/search/resultsByKeyWords`,{
+        params:{
+            city,
+            keyword,
+            sign
+        }
+    })
+    ctx.body={count:status===200?count:0,
+              pois:status===200?pois:[]      
+    }
+    console.log(count)
+    
+})
 
 
 export default router;

@@ -31,7 +31,7 @@ const store =()=>new Vuex.Store({
                     city:app.store.state.geo.position.city.replace('市','')
                 }
             })
-            console.log(result,city)
+            
             // 传参,调用home下的sethotplace函数
             commit('home/setHotplace',status3===200?menu:[])
             
