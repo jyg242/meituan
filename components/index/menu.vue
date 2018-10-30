@@ -34,6 +34,7 @@ export default {
   },
   computed:{
     curdetail(){
+      
       return  this.$store.state.home.menu.filter(item=>item.type===this.kind)[0]    
     }
   },

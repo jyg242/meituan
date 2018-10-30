@@ -40,7 +40,7 @@ router.get('/menu',async (ctx)=>{
             }
         
     })
-// 获取省份
+// 获取所有省份
 router.get('/province', async (ctx) => {
     let {status, data: {
         province
@@ -51,7 +51,7 @@ router.get('/province', async (ctx) => {
         : []
     }
   })
- //
+ //获取某省份下的城市
  router.get('/province/:id', async (ctx) => {
     let {status, data: {
         city
@@ -66,4 +66,38 @@ router.get('/province', async (ctx) => {
       }
     }
   })
+  //获取所有城市
+  router.get('/city', async (ctx) => {
+    let {status, data: {
+        city
+      }} = await axios.get(`http://cp-tools.cn/geo/city?sign=${sign}`);
+    if (status === 200) {
+      ctx.body = {
+        city
+      }
+    } else {
+      ctx.body = {
+        city: []
+      }
+    }
+  })
+  //获取热门城市
+  router.get('/hotCity', async (ctx) => {
+    let {status, data: {
+        hots
+      }} = await axios.get(`http://cp-tools.cn/geo/Hotcity?sign=${sign}`);
+    if (status === 200) {
+      
+      ctx.body = {
+        hots
+      }
+      
+    } else {
+      
+      ctx.body = {
+        hots: []
+      }
+    }
+  })
+  // console.log(this.status,this.city)
 export default router;

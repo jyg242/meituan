@@ -31,9 +31,6 @@
                         @click="login">登录</el-button>    
             </div>
         </div>
-        <div>
-            腿
-        </div>
     </div>
     
 </template>
@@ -76,7 +73,10 @@ import CrytoJS from 'crypto-js'
                     }
                 })
             }
-    }     
+         } ,
+         mounted() {
+             console.log(this.$route.params.id)
+         },    
     } 
 </script>
 <style lang="scss">

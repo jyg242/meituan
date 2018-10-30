@@ -17,7 +17,7 @@
             :value="item.value">
             </el-option>
         </el-select>
-        <span class="name">直接搜索:</span>
+        <span class="name-2">直接搜索:</span>
         <el-autocomplete
             v-model="input"
             :fetch-suggestions="querySearchAsync"
@@ -27,6 +27,8 @@
     </div>
 </template>
 <script>
+// 延迟处理模块
+import _ from 'lodash'
    export default{
        data(){
            return {
@@ -34,7 +36,8 @@
                pvalue:'',
                city:[],
                cvalue:'',
-               input:''
+               input:'',
+               cities:[]
 
            }
        }, 
@@ -57,9 +60,8 @@
     //    页面打开时加载下面所有省份列表
        mounted:async function(){
            let self=this;
-           console.log('MOUNTED')
            let {status,data:{province}}=await self.$axios.get('http://127.0.0.1:3000/geo/province')
-           console.log(status,province)
+        //    console.log(status,province)
             if(status===200){
                 self.province=province.map(item=>{
                     return {
@@ -70,10 +72,36 @@
             }
        }, 
        methods:{
-           querySearchAsync:function(){
-            
-           },
-            handleSelect:function(){
+        //    query用户输入的内容 :fetch-suggestions用户输入时触发下面这个事件
+           querySearchAsync:_.debounce(async function(query,cb){
+                let self=this;
+                if(self.cities.length){
+                    // 搜索输入的文字内容城市
+                    cb(self.cities.filter(item=>item.value.indexOf(query)>-1))
+                }else{
+                    // 如果没有cities数据,发送第一次请求
+                    let {status,data:{city}}=await self.$axios.get('http://127.0.0.1:3000/geo/city')
+                    if(status===200){
+                        // 改变cities的数据结构
+                        self.cities=city.map(item=>{
+                            return {value:item.name}
+                        })
+                        cb(self.cities.filter(item=>item.value.indexOf(query)>-1))
+                    }else{
+                        cb([])
+                    }
+                }  
+           },200),
+            handleSelect:function(item){
+                // console.log(item.value)
+                // window.location.href='/'
+                this.$router.push({
+          name: 'login',
+          params: {
+            id: 5
+          }
+        })
+                
 
             }
        }

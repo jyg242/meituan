@@ -27,6 +27,7 @@
           prop="name">
           <el-input v-model="ruleForm.name" />
         </el-form-item>
+        <!-- 邮箱验证.............................. -->
         <el-form-item
           label="邮箱"
           prop="email">
@@ -44,6 +45,27 @@
             v-model="ruleForm.code"
             maxlength="4" />
         </el-form-item>
+        <!-- .................................... -->
+
+        <!-- 手机验证.............................. -->
+        <!-- <el-form-item
+          label="手机"
+          prop="phone">
+          <el-input v-model="ruleForm.phone"/>
+          <el-button
+            size="mini"
+            round
+            @click="sendSMS">发送验证码</el-button>
+          <span class="status">{{ statusMsg }}</span>
+        </el-form-item>
+        <el-form-item
+          label="验证码"
+          prop="code">
+          <el-input
+            v-model="ruleForm.code"
+            maxlength="4" />
+        </el-form-item> -->
+        <!-- .................................... -->
         <el-form-item
           label="密码"
           prop="pwd">
@@ -87,7 +109,8 @@ import CryptoJS from 'crypto-js'
                     code:'',
                     pwd:'',
                     cpwd:'',
-                    email:''   
+                    email:'',
+                    phone:''   
                   },
                   rules:{
                       name:[{
@@ -97,6 +120,10 @@ import CryptoJS from 'crypto-js'
                       email:[{
                           required:true,type:'email',message:'请输入邮箱',trigger:'blur'
                       }],
+                      phone: [
+                        { required: true, message: '请输入手机号', trigger: 'blur' },
+                    
+                      ],
                       pwd:[{
                           required:true,message:'创建密码',trigger:'blur'
                       }],
@@ -120,9 +147,48 @@ import CryptoJS from 'crypto-js'
                 },
         layout: 'blank',
         methods:{
-          // 发送验证码方法
+          // 手机发送验证码验证方法---------------
+            sendSMS() {       
+              const self=this;
+              let namePass
+              let phonePass
+              // 倒计时没到无法执行
+              if(self.timerid){
+                  return false
+                }
+              // 获取ruleform对象验证name的校验规则是否通过，没通过返回true
+              this.$refs['ruleForm'].validateField('name',(valid)=>{
+                namePass=valid
+              })
+              self.statusMsg=''
+              // 如何name没有通过验证
+              if(namePass){
+                return false
+              }
+              // 获取ruleform对象验证eamil的校验规则是否通过
+              this.$refs['ruleForm'].validateField('phone',(valid)=>{
+                phonePass=valid
+              })
+              const phone = self.ruleForm.phone;
+              if( !namePass && !phonePass ) {
+                self.$axios.post('http://127.0.0.1:3000/users/sendSMS', {phone}).then(({status,data}) => {
+                  console.log(status)
+                  if(true){
+                      let count=60;
+                      self.statusMsg=`验证码已发送，剩余${count--}秒`
+                      self.timerid=setInterval(function(){
+                        self.statusMsg=`验证码已发送，剩余${count--}秒`
+                      if(count===0){
+                        clearInterval(self.timerid)
+                        self.statusMsg=''
+                        }
+                      },1000)
+                    }
+                })
+              }
+            },
+          // 邮箱发送验证码方法-----------
             sendMsg(){
-              console.log(1)
                 const self=this;
                 let namePass
                 let emailPass

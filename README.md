@@ -31,5 +31,6 @@ For detailed explanation on how things work, checkout [Nuxt.js docs](https://nux
 
       启动 sudo mongod
 
+      启动 npm run dev
 
 f345fd3516adfb6e108e139e614756dc
