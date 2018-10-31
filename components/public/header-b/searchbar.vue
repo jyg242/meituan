@@ -5,9 +5,9 @@
         <img src="//s0.meituan.net/bs/fe-web-meituan/e5eeaef/img/logo.png" alt=""></el-col>
       <el-col :span="15" class="center">
         <div class="wrapper">
-          <el-input placeholder="搜索商家或地点" v-model="search"
+          <el-input placeholder="搜索商家或地点" v-model="search" 
            @focus="focus" @blur="blur" @input="input"/>
-          <button class="el-button el-button--primary"><i class="el-icon-search"/></button>
+          <button class="el-button el-button--primary" @click='fnsearch()'><a :href="'/products?keyword='+this.search"><i class="el-icon-search"/></a></button>
           <dl 
           v-if="isHotPlace"
           class="hotPlace">
@@ -28,23 +28,7 @@
           :key="idx"
           :href="'/products?keyword='+encodeURIComponent(item.name)">{{item.name}}</a>        
         </p>
-        <ul class="nav">
-          <li>
-            <nuxt-link to="/" class="takeout">美团外卖</nuxt-link>
-          </li>
-           <li>
-            <nuxt-link to="/" class="takeout">猫眼电影</nuxt-link>
-          </li>
-           <li>
-            <nuxt-link to="/" class="takeout">美团酒店</nuxt-link>
-          </li>
-           <li>
-            <nuxt-link to="/" class="takeout">名宿/公寓</nuxt-link>
-          </li>
-           <li>
-            <nuxt-link to="/" class="takeout">商家入驻</nuxt-link>
-          </li>
-        </ul>
+       
       </el-col>
       <el-col :span="6" class="right">
         <ul class="security">
@@ -75,7 +59,19 @@ export default {
       return this.isFocus&&this.search
     }
   },
+  
   methods:{
+    fnsearch(){
+      this.$router.push({
+		          path:'/products',
+              query:{
+                    keyword:this.search
+              }
+      })
+
+      },
+      
+    // },
     focus(){
       this.isFocus=true
     },

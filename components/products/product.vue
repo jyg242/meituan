@@ -6,7 +6,7 @@
             alt='商品名称'>
         </dt>
         <dd>
-            <h3><nuxt-link to="{patch:'detail',query:{keyword:meta.name,type:meta.module}}">{{meta.name}}</nuxt-link></h3>
+            <h3><nuxt-link :to="{path:'/detail',query:{keyword:meta.name,type:meta.module}}">{{ meta.name }}</nuxt-link></h3>
             <el-rate 
             v-model="meta.rate"
             :colors="['#ff9900','#ff9900','#ff9900']"

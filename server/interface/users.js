@@ -44,12 +44,14 @@ router.post('/signup', async(ctx) => {
                     code: -1,
                     msg: '请填写正确的验证码'
                 }
+                return
             }
         } else {
             ctx.body = {
                 code: -1,
                 msg: '请填写验证码'
             }
+            return
         }
         // 注册判断账号是否已注册
         let user = await User.find({ username })

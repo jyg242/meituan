@@ -28,7 +28,7 @@
           <el-input v-model="ruleForm.name" />
         </el-form-item>
         <!-- 邮箱验证.............................. -->
-        <!-- <el-form-item
+        <el-form-item
           label="邮箱"
           prop="email">
           <el-input v-model="ruleForm.email" />
@@ -44,11 +44,11 @@
           <el-input
             v-model="ruleForm.code"
             maxlength="4" />
-        </el-form-item> -->
+        </el-form-item>
         <!-- .................................... -->
 
         <!-- 手机验证.............................. -->
-        <el-form-item
+        <!-- <el-form-item
           label="手机"
           prop="phone">
           <el-input v-model="ruleForm.phone"/>
@@ -64,7 +64,7 @@
           <el-input
             v-model="ruleForm.code"
             maxlength="4" />
-        </el-form-item>
+        </el-form-item> -->
         <!-- .................................... -->
         <el-form-item
           label="密码"

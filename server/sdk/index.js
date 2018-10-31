@@ -69,9 +69,9 @@ class AliYunSMS {
         let yzm = Math.random().toString(16).slice(2, 6).toUpperCase()
         smsClient.sendSMS({
             PhoneNumbers: this.phone,
-            SignName: '商洛阳光美农',
+            SignName: '亚光互联',
             TemplateCode: 'SMS_149416304',
-            TemplateParam: '{"code":"123","product":"aaa"}'
+            TemplateParam: `{"code":"${yzm}","product":"aaa"}`
         }).then(function(res) {
 
             let { Code } = res
