@@ -48,7 +48,8 @@
         },
         computed:{
             rate(){
-                return Number(this.meta.biz_ext.rating) || Math.floor(Math.random()*5)
+                return Math.floor(Math.random()*5)
+                // return Number(this.meta.biz_ext.rating) || Math.floor(Math.random()*5)
             }
         },
         methods:{

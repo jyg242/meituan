@@ -40,8 +40,25 @@
             }
         },
         methods:{
-            createCart:async function(){
-                
+            createCart: async function(){
+                console.log('客户端')
+                let self=this;
+                let {status,data:{code,id}}=await this.$axios.post('http://127.0.0.1:3000/cart/create',{
+                   params:{
+                      id:Math.random().toString().slice(3,9),
+                      detail:{
+                        name:self.meta.name,
+                        price:self.meta.biz_ext.cost,
+                        imgs:self.meta.photos 
+                      }
+                   }
+                })
+                if(status===200&&code===0){
+                    console.log(1)
+                    window.location.href=`/cart/?id=${id}`
+                }else{
+                    console.log('error')
+                }
             }
         }
     }

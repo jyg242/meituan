@@ -13,6 +13,7 @@ import passport from './interface/utils/passport'
 import users from './interface/users'
 import search from './interface/search'
 import categroy from './interface/categroy'
+import cart from './interface/cart'
 // 导入geo路由列表
 import geo from './interface/geo'
 const app = new Koa()
@@ -58,6 +59,7 @@ async function start() {
     app.use(geo.routes()).use(geo.allowedMethods())
     app.use(search.routes()).use(search.allowedMethods())
     app.use(categroy.routes()).use(categroy.allowedMethods())
+    app.use(cart.routes()).use(cart.allowedMethods())
     app.use(ctx => {
         ctx.status = 200 // koa defaults to 404 when it sees that status is unset
 

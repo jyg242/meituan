@@ -6,8 +6,9 @@
       <el-col :span="15" class="center">
         <div class="wrapper">
           <el-input placeholder="搜索商家或地点" v-model="search" 
-           @focus="focus" @blur="blur" @input="input"/>
-          <button class="el-button el-button--primary" @click='fnsearch()'><a :href="'/products?keyword='+this.search"><i class="el-icon-search"/></a></button>
+           @focus="focus" @blur="blur" @input="input"
+           />
+          <button class="el-button el-button--primary" @click='fnsearch'><i class="el-icon-search"/></button>
           <dl 
           v-if="isHotPlace"
           class="hotPlace">
@@ -61,14 +62,16 @@ export default {
   },
   
   methods:{
-    fnsearch(){
-      this.$router.push({
-		          path:'/products',
-              query:{
-                    keyword:this.search
-              }
-      })
-
+      
+      fnsearch(){
+          this.$router.go(0)
+          this.$router.push({
+                  path:'/products',
+                  query:{
+                        keyword:this.search
+                  }
+          })
+          // this.$router.go(0)
       },
       
     // },
@@ -86,7 +89,7 @@ export default {
     input:_.debounce(async function(){
         let self=this
         let city=self.$store.state.geo.position.city.replace('市','')
-        console.log(city)
+
         self.searchList=[]
         let {status,data:{top}}=await self.$axios.get('http://127.0.0.1:3000/search/top',{
           params:{
