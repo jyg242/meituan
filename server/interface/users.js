@@ -17,75 +17,139 @@ import axios from './utils/axios'
 
 import UserController from '../controller/user';
 
+
+
+
 // 创建路由对象并定义前缀
 let router = new Router({ prefix: '/users' })
     // 获取redid客户端
 let Store = new Redis().client
     // -----------------用户注册路由
 router.post('/signup', async(ctx) => {
-        const { username, password, email, code } = ctx.request.body;
-        // code是smtp发出去的随机验证码 expire是验证码的有效时间
-        if (code) {
-            // 取出redis在nodemail发邮件时的验证码code、发送时间expire中的hash值
+    const { username, password, phone, code } = ctx.request.body;
+    // code是smtp发出去的随机验证码 expire是验证码的有效时间
+    if (code) {
+        // const saveCode = ctx.cookies.get('phoneid').toUpperCase()
+        const saveCode = ctx.session.phoneid.toUpperCase()
+        const savetime = ctx.session.timeid
+        console.log(`提取到的cookies:${saveCode}`)
+        if (code.toUpperCase() === saveCode) {
+            if (new Date().getTime() - savetime > 0) {
+                // 如已经过期返回
+                ctx.body = {
+                    code: -1,
+                    msg: '验证码已过期，请重新尝试'
+                }
+                return false
+            }
+        } else {
+            ctx.body = {
+                code: -1,
+                msg: '请填写正确的验证码'
+            }
+            return
+        }
+    } else {
+        ctx.body = {
+            code: -1,
+            msg: '请填写验证码'
+        }
+        return
+    }
+    // 注册判断账号是否已注册
+    let user = await User.find({ username })
+    if (user.length) {
+        ctx.body = {
+            code: -1,
+            msg: '已被注册'
+        }
+        return
+    }
+    // mongdb增加数据
+    let nuser = await User.create({ username, password, phone })
+    if (nuser) {
+        let res = await axios.post('/users/signin', { username, password })
+        if (res.data && res.data.code === 0) {
+            ctx.body = {
+                code: 0,
+                msg: '注册成功',
+                user: res.data.user
+            }
+        } else {
+            ctx.body = {
+                code: -1,
+                msg: 'error'
+            }
+        }
+    } else {
+        ctx.body = {
+            code: -1,
+            msg: '注册失败'
+        }
+    }
+})
 
-            const saveCode = await Store.hget(`nodemail:${username}`, 'code')
-            const saveExpire = await Store.hget(`nodemail:${username}`, 'expire')
-            if (code === saveCode) {
-                if (new Date().getTime() - saveExpire > 0) {
-                    // 如已经过期返回
-                    ctx.body = {
-                        code: -1,
-                        msg: '验证码已过期，请重新尝试'
-                    }
-                    return false
-                }
-            } else {
-                ctx.body = {
-                    code: -1,
-                    msg: '请填写正确的验证码'
-                }
-                return
-            }
-        } else {
-            ctx.body = {
-                code: -1,
-                msg: '请填写验证码'
-            }
-            return
-        }
-        // 注册判断账号是否已注册
-        let user = await User.find({ username })
-        if (user.length) {
-            ctx.body = {
-                code: -1,
-                msg: '已被注册'
-            }
-            return
-        }
-        // mongdb增加数据
-        let nuser = await User.create({ username, password, email })
-        if (nuser) {
-            let res = await axios.post('/users/signin', { username, password })
-            if (res.data && res.data.code === 0) {
-                ctx.body = {
-                    code: 0,
-                    msg: '注册成功',
-                    user: res.data.user
-                }
-            } else {
-                ctx.body = {
-                    code: -1,
-                    msg: 'error'
-                }
-            }
-        } else {
-            ctx.body = {
-                code: -1,
-                msg: '注册失败'
-            }
-        }
-    })
-    // -----------------用户登录路由
+// if (code) {
+//     // 取出redis在nodemail发邮件时的验证码code、发送时间expire中的hash值
+
+//     const saveCode = await Store.hget(`nodemail:${username}`, 'code')
+//     const saveExpire = await Store.hget(`nodemail:${username}`, 'expire')
+//     if (code === saveCode) {
+//         if (new Date().getTime() - saveExpire > 0) {
+//             // 如已经过期返回
+//             ctx.body = {
+//                 code: -1,
+//                 msg: '验证码已过期，请重新尝试'
+//             }
+//             return false
+//         }
+//     } else {
+//         ctx.body = {
+//             code: -1,
+//             msg: '请填写正确的验证码'
+//         }
+//         return
+//     }
+// } else {
+//     ctx.body = {
+//         code: -1,
+//         msg: '请填写验证码'
+//     }
+//     return
+// }
+// 注册判断账号是否已注册
+//     let user = await User.find({ username })
+//     if (user.length) {
+//         ctx.body = {
+//             code: -1,
+//             msg: '已被注册'
+//         }
+//         return
+//     }
+//     // mongdb增加数据
+//     let nuser = await User.create({ username, password, email })
+//     if (nuser) {
+//         let res = await axios.post('/users/signin', { username, password })
+//         if (res.data && res.data.code === 0) {
+//             ctx.body = {
+//                 code: 0,
+//                 msg: '注册成功',
+//                 user: res.data.user
+//             }
+//         } else {
+//             ctx.body = {
+//                 code: -1,
+//                 msg: 'error'
+//             }
+//         }
+//     } else {
+//         ctx.body = {
+//             code: -1,
+//             msg: '注册失败'
+//         }
+//     }
+// })
+// -----------------用户登录路由
 router.post('/signin', async(ctx, next) => {
         return Passport.authenticate('local', function(err, user, info, status) {
             if (err) {
@@ -197,6 +261,13 @@ router.get('/getUser', async(ctx) => {
 })
 
 router.post('/sendSMS', UserController.sendSMS)
+    //测试
+router.get('/yzm', async(ctx) => {
 
+    ctx.body = {
+        msg: 123,
+
+    }
+})
 
 export default router

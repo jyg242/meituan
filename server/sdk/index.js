@@ -17,12 +17,15 @@ const queueName = 'Alicom-Queue-1092397003988387-'
 //初始化sms_client
 let smsClient = new SMSClient({ accessKeyId, secretAccessKey })
 
+
 class AliYunSMS {
-    constructor(phone) {
+    constructor(phone, yzm) {
         this.phone = phone;
+        this.yzm = yzm
         this.init();
     }
     init() {
+
         //短信回执报告
         smsClient.receiveMsg(0, queueName).then(function(res) {
             //消息体需要base64解码
@@ -66,18 +69,19 @@ class AliYunSMS {
         })
 
         //发送短信
-        let yzm = Math.random().toString(16).slice(2, 6).toUpperCase()
+        // let yzm = Math.random().toString(16).slice(2, 6).toUpperCase()
         smsClient.sendSMS({
             PhoneNumbers: this.phone,
             SignName: '亚光互联',
             TemplateCode: 'SMS_149416304',
-            TemplateParam: `{"code":"${yzm}","product":"aaa"}`
+            TemplateParam: `{"code":"${this.yzm}","product":"aaa"}`
         }).then(function(res) {
 
             let { Code } = res
             if (Code === 'OK') {
                 //处理返回参数
                 console.log(res)
+
             }
         }, function(err) {
             console.log(err)

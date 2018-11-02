@@ -3,10 +3,12 @@ import Koa from 'koa'
 const consola = require('consola')
 const { Nuxt, Builder } = require('nuxt')
 import mongoose from 'mongoose'
-// 获取post请求
+// 处理post请求
 import bodyParser from 'koa-bodyparser'
+//登录注册使用
 import session from 'koa-generic-session'
 import Redis from 'koa-redis'
+// 这两一起使用上面
 import json from 'koa-json'
 import dbConfig from './dbs/config'
 import passport from './interface/utils/passport'
@@ -20,13 +22,14 @@ const app = new Koa()
 const host = process.env.HOST || '127.0.0.1'
 const port = process.env.PORT || 3000
 
-// 设置签名的cookic秘钥
+// 设置签名的cookic秘钥,随便填写两个值
 app.keys = ['mt', 'keyskeys']
+    //让session
 app.proxy = true
 app.use(session({
-    key: 'mt',
-    prefix: 'mt:uid',
-    store: new Redis()
+    key: 'mt', //这里是cookise里session的名称
+    prefix: 'mt:uid', //这里是cookise里session的名称前缀
+    store: new Redis() //如果不添加次条属性session用的是内存,这里设置用的是redis
 }))
 
 app.use(bodyParser({

@@ -172,8 +172,8 @@ import CryptoJS from 'crypto-js'
               const phone = self.ruleForm.phone;
               if( !namePass && !phonePass ) {
                 self.$axios.post('http://127.0.0.1:3000/users/sendSMS', {phone}).then(({status,data}) => {
-                  console.log(status)
                   if(true){
+                    console.log('验证码发送成功并返回')
                       let count=60;
                       self.statusMsg=`验证码已发送，剩余${count--}秒`
                       self.timerid=setInterval(function(){
@@ -188,66 +188,69 @@ import CryptoJS from 'crypto-js'
               }
             },
           // 邮箱发送验证码方法-----------
-            sendMsg(){
-                const self=this;
-                let namePass
-                let emailPass
-                // 倒计时不够60s无法执行
-                if(self.timerid){
-                  return false
-                }
-                // 获取ruleform对象验证name的校验规则是否通过，没通过返回true
-                this.$refs['ruleForm'].validateField('name',(valid)=>{
-                  namePass=valid
-                })
-                self.statusMsg=''
-                // 如何name没有通过验证
-                if(namePass){
-                  return false
-                }
-                // 获取ruleform对象验证eamil的校验规则是否通过
-                this.$refs['ruleForm'].validateField('email',(valid)=>{
-                  emailPass=valid
-                })
-                // 如果用户名和密码都通过表单验证了发送axios请求邮箱验证
-                if(!namePass && !emailPass){
-                  self.$axios.post('http://127.0.0.1:3000/users/verify',{
-                    //对中文进行编码
-                    username:encodeURIComponent(self.ruleForm.name),
-                    email:self.ruleForm.email
-                  }).then(({status,data})=>{
-                    if(status===200&&data&&data.code==0){
-                      let count=60;
-                      self.statusMsg=`验证码已发送，剩余${count--}秒`
-                      self.timerid=setInterval(function(){
-                        self.statusMsg=`验证码已发送，剩余${count--}秒`
-                      if(count===0){
-                        clearInterval(self.timerid)
-                        self.statusMsg=''
-                        }
-                      },1000)
-                    }else{
-                      self.statusMsg=data.msg
-                    }
-                  })
-                }
-              },
+            // sendMsg(){
+            //     const self=this;
+            //     let namePass
+            //     let phonePass
+            //     // 倒计时不够60s无法执行
+            //     if(self.timerid){
+            //       return false
+            //     }
+            //     // 获取ruleform对象验证name的校验规则是否通过，没通过返回true
+            //     this.$refs['ruleForm'].validateField('name',(valid)=>{
+            //       namePass=valid
+            //     })
+            //     self.statusMsg=''
+            //     // 如何name没有通过验证
+            //     if(namePass){
+            //       return false
+            //     }
+            //     // 获取ruleform对象验证eamil的校验规则是否通过
+            //     this.$refs['ruleForm'].validateField('phone',(valid)=>{
+            //       phonePass=valid
+            //     })
+            //     // 如果用户名和密码都通过表单验证了发送axios请求邮箱验证
+            //     if(!namePass && !phonePass){
+            //       console.log('发送验证码请求')
+            //       self.$axios.post('http://127.0.0.1:3000/users/verify',{
+            //         //对中文进行编码
+            //         username:encodeURIComponent(self.ruleForm.name),
+            //         email:self.ruleForm.phone
+            //       }).then(({status,data})=>{
+            //         if(status===200&&data&&data.code==0){
+            //           let count=60;
+            //           self.statusMsg=`验证码已发送，剩余${count--}秒`
+            //           self.timerid=setInterval(function(){
+            //             self.statusMsg=`验证码已发送，剩余${count--}秒`
+            //           if(count===0){
+            //             clearInterval(self.timerid)
+            //             self.statusMsg=''
+            //             }
+            //           },1000)
+            //         }else{
+            //           self.statusMsg=data.msg
+            //         }
+            //       })
+            //     }
+            //   },
           // 注册提交方法
                 register:function(){
                   let self=this;
                   // 对ruleForm对象所有属性规则进行验证，全部通过返回true
                   this.$refs['ruleForm'].validate((valid)=>{
                     if(valid){
+                      console.log('发送注册请求')
                       self.$axios.post('http://127.0.0.1:3000/users/signup',{
                         username:window.encodeURIComponent(self.ruleForm.name),
                         password:CryptoJS.MD5(self.ruleForm.pwd).toString(),
-                        email:self.ruleForm.email,
+                        phone:self.ruleForm.phone,
                         code:self.ruleForm.code
                       }).then(({status,data})=>{
                         if(status===200){
                           if(data&&data.code===0){
                             location.href='/login'
                           }else{
+                            
                             self.error=data.msg
                             }
                           }else{
