@@ -21,6 +21,7 @@ import Categroy from '@/components/products/categroy'
 import List from '@/components/products/list.vue'
 import Amap from '@/components/public/map.vue'
    export default{
+    
        data(){
            return{
                list:[],
@@ -41,14 +42,16 @@ import Amap from '@/components/public/map.vue'
        async asyncData(ctx){
            let keyword =ctx.query.keyword
            let city = ctx.store.state.geo.position.city
-           let {status,data:{count,pois}}=await ctx.$axios.get('http://127.0.0.1:3000/search/resultsByKeyWords',{
+          
+           let {status,data:{count,pois}}=await ctx.$axios.get('http://cp-tools.cn/search/resultsByKeyWords?sign=f345fd3516adfb6e108e139e614756dc',{
                params:{
                    keyword,
                    city
+                   
                }
            })
            
-           let {status:status2,data:{areas,types}}=await ctx.$axios.get('http://127.0.0.1:3000/categroy/crumbs',{
+           let {status:status2,data:{areas,types}}=await ctx.$axios.get('http://cp-tools.cn/categroy/crumbs?sign=f345fd3516adfb6e108e139e614756dc',{
                params:{
                    city
                }

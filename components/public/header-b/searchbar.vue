@@ -91,7 +91,7 @@ export default {
         let city=self.$store.state.geo.position.city.replace('市','')
 
         self.searchList=[]
-        let {status,data:{top}}=await self.$axios.get('http://127.0.0.1:3000/search/top',{
+        let {status,data:{top}}=await self.$axios.get('http://cp-tools.cn/search/top?sign=f345fd3516adfb6e108e139e614756dc',{
           params:{
             input:self.search,
             city

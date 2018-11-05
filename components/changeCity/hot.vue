@@ -17,7 +17,7 @@
             }
         },
         async mounted() {
-            let {status,data:{hots}}=await this.$axios.get('http://127.0.0.1:3000/geo/hotCity')
+            let {status,data:{hots}}=await this.$axios.get(`http://cp-tools.cn/geo/Hotcity?sign=f345fd3516adfb6e108e139e614756dc`)
             if(status===200){
                 this.list=hots
             }

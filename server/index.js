@@ -14,10 +14,10 @@ import dbConfig from './dbs/config'
 import passport from './interface/utils/passport'
 import users from './interface/users'
 import search from './interface/search'
-import categroy from './interface/categroy'
+// import categroy from './interface/categroy'
 import cart from './interface/cart'
 // 导入geo路由列表
-import geo from './interface/geo'
+// import geo from './interface/geo'
 const app = new Koa()
 const host = process.env.HOST || '127.0.0.1'
 const port = process.env.PORT || 3000
@@ -59,9 +59,9 @@ async function start() {
     }
     // 设置路由器
     app.use(users.routes()).use(users.allowedMethods())
-    app.use(geo.routes()).use(geo.allowedMethods())
+        // app.use(geo.routes()).use(geo.allowedMethods())
     app.use(search.routes()).use(search.allowedMethods())
-    app.use(categroy.routes()).use(categroy.allowedMethods())
+        // app.use(categroy.routes()).use(categroy.allowedMethods())
     app.use(cart.routes()).use(cart.allowedMethods())
     app.use(ctx => {
         ctx.status = 200 // koa defaults to 404 when it sees that status is unset

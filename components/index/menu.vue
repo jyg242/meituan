@@ -20,7 +20,7 @@
           <h4 :key="idx">{{ item.title }}</h4>
           <span
           v-for="v in item.child"
-          :key="v">{{ v }}</span>
+          :key="v"><nuxt-link :to="'/products?keyword='+v">{{ v }}</nuxt-link></span>
       </template>
       </div> 
   </div>
@@ -47,7 +47,7 @@ export default {
     },
     enter(e){
       this.kind=e.target.querySelector('i').className
-      console.log(this.kind)
+      // console.log(this.kind)
       //计算属性用不了只能进行强行赋值的方法
       // this.jyg=this.menu.filter(item=>item.type===this.kind)[0]
       // console.log(this.jyg)

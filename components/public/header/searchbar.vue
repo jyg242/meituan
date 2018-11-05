@@ -7,7 +7,7 @@
         <div class="wrapper">
           <el-input placeholder="搜索商家或地点" v-model="search"
            @focus="focus" @blur="blur" @input="input"/>
-          <button class="el-button el-button--primary"><i class="el-icon-search"/></button>
+          <button class="el-button el-button--primary" @click='fnsearch'><i class="el-icon-search"/></button>
           <dl 
           v-if="isHotPlace"
           class="hotPlace">
@@ -76,6 +76,16 @@ export default {
     }
   },
   methods:{
+      fnsearch(){
+          
+          this.$router.push({
+                  path:'/products',
+                  query:{
+                        keyword:this.search
+                  }
+          })
+          // this.$router.go(0)
+    },
     focus(){
       this.isFocus=true
     },
@@ -92,7 +102,7 @@ export default {
         let city=self.$store.state.geo.position.city.replace('市','')
         console.log(city)
         self.searchList=[]
-        let {status,data:{top}}=await self.$axios.get('http://127.0.0.1:3000/search/top',{
+        let {status,data:{top}}=await self.$axios.get('http://cp-tools.cn/search/top?sign=f345fd3516adfb6e108e139e614756dc',{
           params:{
             input:self.search,
             city

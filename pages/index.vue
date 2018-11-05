@@ -28,12 +28,10 @@ export default {
   },
   head(){
       return{
-        title:'蒋亚光仿美团-主页',
-        meta:[
-          {hid:'description',name:'news',content:'蒋亚光的美团'}
-        ]
+        title:'蒋亚光',
+        
       }
-    }
+    },
 }
 
 </script>

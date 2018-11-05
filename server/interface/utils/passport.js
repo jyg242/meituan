@@ -7,26 +7,26 @@ import LocalStrategy from 'passport-local'
 //引入users数据模型
 import UserModel from '../../dbs/models/users'
 
-passport.use(new LocalStrategy(async function(username,password,done){
-    let where ={
-        username
-    };
-    let result=await UserModel.findOne(where)
-    if(result!=null){
-        if(result.password===password){
-            return done(null,result)
-        }else{
-            return done(null,false,'密码错误')
+passport.use(new LocalStrategy(async function(username, password, done) {
+        let where = {
+            username
+        };
+        let result = await UserModel.findOne(where)
+        if (result != null) {
+            if (result.password === password) {
+                return done(null, result)
+            } else {
+                return done(null, false, '密码错误')
+            }
+        } else {
+            return done(null, false, '用户不存在')
         }
-    }else{
-        return done(null,false,'用户不存在')
-    }
-}))
-// Session相关
-passport.serializeUser(function(user,done){
-    done(null,user)
+    }))
+    // Session登录成功后把信息存session里,下次进来会从cookise中提取出session和服务端session做验证对比
+passport.serializeUser(function(user, done) {
+    done(null, user)
 })
-passport.deserializeUser(function(user,done){
-    return done(null,user) 
+passport.deserializeUser(function(user, done) {
+    return done(null, user)
 })
 export default passport

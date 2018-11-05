@@ -1,19 +1,15 @@
 const state = () => ({
-    position: {}
+    count: 10
 })
 
 const mutations = {
-    setPosition(state, val) {
-        state.position = val
+    setall(state, val) {
+        state.count += val
     }
 }
 const actions = {
-    setPosition: function({ commit }, position) {
-        commit('setPosition', position)
-        this.$router.push({
-            name: 'index',
-
-        })
+    add: function({ commit }, all) {
+        commit('setall', all)
     }
 }
 export default {

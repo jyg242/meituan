@@ -14,7 +14,8 @@
             v-for="item in city"
             :key="item.value"
             :label="item.label"
-            :value="item.value">
+            :value="item.value"
+            @select="setPosition(newsetPosition)">
             </el-option>
         </el-select>
         <span class="name-2">直接搜索:</span>
@@ -22,13 +23,16 @@
             v-model="input"
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入城市中文或拼音"
-            @select="handleSelect">
+            @select="setPosition(newsetPosition)">
         </el-autocomplete>
     </div>
 </template>
 <script>
 // 延迟处理模块
 import _ from 'lodash'
+import { mapActions } from 'vuex'
+// import art from '../../store/modules/art.js'
+
    export default{
        data(){
            return {
@@ -37,7 +41,8 @@ import _ from 'lodash'
                city:[],
                cvalue:'',
                input:'',
-               cities:[]
+               cities:[],
+               newsetPosition:{province: "北京市",city:"北京市", id: "110100"}
 
            }
        }, 
@@ -45,7 +50,7 @@ import _ from 'lodash'
        watch:{
             pvalue:async function(newPvalue){
                 let self=this;
-                let {status,data:{city}}=await self.$axios.get(`http://127.0.0.1:3000/geo/province/${newPvalue}`)
+                let {status,data:{city}}=await self.$axios.get(`http://cp-tools.cn/geo/province/${newPvalue}?sign=f345fd3516adfb6e108e139e614756dc`)
                 if(status===200){
                     self.city=city.map(item=>{
                         return {
@@ -60,7 +65,7 @@ import _ from 'lodash'
     //    页面打开时加载下面所有省份列表
        mounted:async function(){
            let self=this;
-           let {status,data:{province}}=await self.$axios.get('http://127.0.0.1:3000/geo/province')
+           let {status,data:{province}}=await self.$axios.get(`http://cp-tools.cn/geo/province?sign=f345fd3516adfb6e108e139e614756dc`)
         //    console.log(status,province)
             if(status===200){
                 self.province=province.map(item=>{
@@ -72,6 +77,7 @@ import _ from 'lodash'
             }
        }, 
        methods:{
+            ...mapActions('geo',['setPosition']),
         //    query用户输入的内容 :fetch-suggestions用户输入时触发下面这个事件
            querySearchAsync:_.debounce(async function(query,cb){
                 let self=this;
@@ -80,7 +86,7 @@ import _ from 'lodash'
                     cb(self.cities.filter(item=>item.value.indexOf(query)>-1))
                 }else{
                     // 如果没有cities数据,发送第一次请求
-                    let {status,data:{city}}=await self.$axios.get('http://127.0.0.1:3000/geo/city')
+                    let {status,data:{city}}=await self.$axios.get('http://cp-tools.cn/geo/city?sign=f345fd3516adfb6e108e139e614756dc')
                     if(status===200){
                         // 改变cities的数据结构
                         self.cities=city.map(item=>{
@@ -92,18 +98,15 @@ import _ from 'lodash'
                     }
                 }  
            },200),
-            handleSelect:function(item){
-                // console.log(item.value)
-                // window.location.href='/'
-                this.$router.push({
-          name: 'login',
-          params: {
-            id: 5
-          }
-        })
-                
-
-            }
+            
+             handleSelect(item){
+                // commit('geo/setPosition',{ "province": "tianj市", "city": "tj市", "ip": "116.239.202.17" } )
+                //  this.$router.push({
+                //      name: 'index',
+                     console.log(item.value)
+                //  })
+                // this.$store.commit('/art/handleSelect',item)
+            },
        }
    } 
 </script>

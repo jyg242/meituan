@@ -15,7 +15,9 @@
             </el-col>
             <el-col 
                 v-else
-                class="empty">购物车为空</el-col>
+                class="empty"><p>购物车为空<p/>
+                <img src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=857635139,1779129256&fm=26&gp=0.jpg" alt="">
+                </el-col>
         </el-row>
     </div>
 </template>

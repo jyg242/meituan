@@ -10,29 +10,32 @@
     </dl>
     <ul class="ibody">
       <li v-for="item in curdetail" :key="item.title">
-        <el-card shadow="never" :body-style="{ padding: '0px' }">
+        <nuxt-link :to="'/detail?keyword='+item.title"><el-card shadow="never" :body-style="{ padding: '0px' }">
           <img :src='item.img' alt="">
           <ul class="cbody">
             <li class="title">{{item.title}}</li>
             <li class="pos"><span>{{item.pos}}</span></li>
-            <li class="price">{{item.price}}</li>
+            <li class="price">{{item.price!=null>0?item.price:'进店详询'}}</li>
           </ul>
-        </el-card>
+        </el-card></nuxt-link>
       </li>
     </ul>
   </section>  
 </template>
 <script>
+import img from '@/assets/img/timg.gif'
 export default {
+ 
   data(){
     return{
+      
       kind: 'all',
       list: {
-        all:[],
-        part:[],
-        spa:[],
-        movie:[],
-        travel:[]
+        all:[{img},{img},{img},{img},{img},{img},{img},{img},{img}],
+        part:[{img},{img},{img},{img},{img},{img},{img},{img},{img}],
+        spa:[{img},{img},{img},{img},{img},{img},{img},{img},{img}],
+        movie:[{img},{img},{img},{img},{img},{img},{img},{img},{img}],
+        travel:[{img},{img},{img},{img},{img},{img},{img},{img},{img}]
       }  
     } 
   },
@@ -44,7 +47,7 @@ export default {
   },
   async mounted(){
     let self=this;
-    let {status,data:{count,pois}}=await self.$axios.get('http://127.0.0.1:3000/search/resultsByKeywords',{
+    let {status,data:{count,pois}}=await self.$axios.get('http://cp-tools.cn/search/resultsByKeywords?sign=f345fd3516adfb6e108e139e614756dc',{
       params:{
         keyword:'景点',
         city:self.$store.state.geo.position.city
@@ -66,6 +69,7 @@ export default {
     }
   },
   methods:{
+   
     over:async function (e) {
       let dom=e.target
       let tag=dom.tagName.toLowerCase()
@@ -73,7 +77,7 @@ export default {
       if(tag==='dd'){
         this.kind=dom.getAttribute('kind')
         let keyword=dom.getAttribute('keyword')
-        let {status,data:{count,pois}}=await self.$axios.get('http://127.0.0.1:3000/search/resultsByKeyWords',{
+        let {status,data:{count,pois}}=await self.$axios.get('http://cp-tools.cn/search/resultsByKeyWords?sign=f345fd3516adfb6e108e139e614756dc',{
           params:{
             keyword,
             city:self.$store.state.geo.position.city

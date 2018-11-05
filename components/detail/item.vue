@@ -41,7 +41,7 @@
         },
         methods:{
             createCart: async function(){
-                console.log('客户端')
+  
                 let self=this;
                 let {status,data:{code,id}}=await this.$axios.post('http://127.0.0.1:3000/cart/create',{
                    params:{
@@ -54,7 +54,7 @@
                    }
                 })
                 if(status===200&&code===0){
-                    console.log(1)
+                    // console.log(1)
                     window.location.href=`/cart/?id=${id}`
                 }else{
                     console.log('error')

@@ -27,7 +27,7 @@ export default{
             }
         },
         created() {
-            console.log(this.list)
+            // console.log(this.list)
         },
     }
 }    

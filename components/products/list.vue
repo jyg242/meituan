@@ -54,7 +54,7 @@ import product from './product'
         },
         methods:{
             navSelect(){
-                console.log(1)
+                // console.log(1)
             }
         }
     }

@@ -19,10 +19,6 @@ const Cart = new Schema({
             type: String,
             require: true //必须的
         },
-        cartNo: {
-            type: String,
-            require: true //必须的
-        },
         user: {
             type: String,
             require: true

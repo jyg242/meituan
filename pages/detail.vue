@@ -13,8 +13,8 @@
             </el-col>
         </el-row>
         <el-row>
-            <el-col :span="24">
-                <h3>商家团购及优惠</h3>
+            <el-col :span="24" >
+                <!-- <h3>商家团购及优惠</h3> -->
             </el-col>
         </el-row>
         <el-row v-if='canOrder || !login'>
@@ -62,6 +62,7 @@ export default {
         city:ctx.store.state.geo.position.city
       }
     })
+    // console.log(1,status,product,login,list)
     if(status===200){
       return {
         keyword,

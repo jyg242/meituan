@@ -33,7 +33,7 @@ import pyjs from 'js-pinyin'
             console.log(this.list)
             let self=this;
             let block=[];
-            let {status,data:{city}}=await self.$axios.get('http://127.0.0.1:3000/geo/city')
+            let {status,data:{city}}=await self.$axios.get('http://cp-tools.cn/geo/city?sign=f345fd3516adfb6e108e139e614756dc')
             if(status===200){
                 // 城市首字母
                 let p

@@ -5,13 +5,13 @@
             <h1>{{meta.name}}</h1>
             <el-rate 
             v-model='rate'
-            disabled="">
+            disabled>
             </el-rate>
             <span>{{Number(meta.biz_ext.rating)||rate}}分</span>
-            <span>人均¥{{Number(meta.biz_ext.cost)}}</span>
+            <span>人均¥{{Number(meta.biz_ext.cost)}}元</span>
             <ul>
-                <li @click="openMap(meta.location)">地址{{meta.address}}</li>
-                <li>电话{{meta.tel}}</li>
+                <li @click="openMap(meta.location)">地址:{{meta.address}}</li>
+                <li>电话:{{meta.tel.length>0?meta.tel:'暂未提供'}}</li>
             </ul>
         </dt>
         <!-- 右边轮播 -->
@@ -48,8 +48,8 @@
         },
         computed:{
             rate(){
-                return Math.floor(Math.random()*5)
-                // return Number(this.meta.biz_ext.rating) || Math.floor(Math.random()*5)
+                // return Math.floor(Math.random()*5)
+                return Number(this.meta.biz_ext.rating) || Math.floor(Math.random()*5)
             }
         },
         methods:{
