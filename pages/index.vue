@@ -26,12 +26,7 @@ export default {
     Life,
     Artistic
   },
-  head(){
-      return{
-        title:'蒋亚光',
-        
-      }
-    },
+ 
 }
 
 </script>

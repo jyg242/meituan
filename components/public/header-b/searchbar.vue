@@ -63,7 +63,7 @@ export default {
   
   methods:{
       
-      fnsearch(){
+      async fnsearch(){
           this.$router.go(0)
           this.$router.push({
                   path:'/products',
