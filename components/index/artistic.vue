@@ -23,7 +23,7 @@
   </section>  
 </template>
 <script>
-import img from '@/assets/img/timg.gif'
+import img from '@/assets/img/123.png'
 export default {
  
   data(){
