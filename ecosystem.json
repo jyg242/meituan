@@ -1,0 +1,23 @@
+{
+    "apps": [{
+        "name": "H5-VUE",
+        "script": "",
+        "env": {
+            "COMMON_VARIABLE": "true"
+        },
+        "env_production": {
+            "NODE_ENV": "production"
+        }
+    }],
+    "deploy": {
+        "production": {
+            "user": "root",
+            "host": ["47.101.142.67"],
+            "ref": "origin/master",
+            "repo": "https://github.com/jyg242/meituan.git",
+            "path": "/www/web/meituan",
+            "pre-deploy": "git fetch --all",
+            "post-deploy": "npm install && npm run dev"
+        }
+    }
+}
