@@ -11,6 +11,7 @@
   </div>
 </template>
 <script>
+import config from '../../../config';
 export default {
   data(){
     return{
@@ -20,7 +21,7 @@ export default {
   },
   async mounted() {
 
-    const {status,data:{user}}=await this.$axios.get('http://127.0.0.1:3000/users/getUser')
+    const {status,data:{user}}=await this.$axios.get(`http://${config.API}:3000/users/getUser`)
     if(status===200){
       this.user=user
       

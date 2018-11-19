@@ -36,6 +36,7 @@
 </template>
 <script>
 import CrytoJS from 'crypto-js'
+import config from '../config'
     export default{
         layout:'blank',
         data(){
@@ -50,7 +51,7 @@ import CrytoJS from 'crypto-js'
         methods:{
             login(){
                 let self=this;
-                self.$axios.post('http://127.0.0.1:3000/users/signin',{
+                self.$axios.post(`http://${config.API}:3000/users/signin`,{
                     username:window.encodeURIComponent(self.username),
                     password:CrytoJS.MD5(self.password).toString()
 

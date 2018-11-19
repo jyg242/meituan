@@ -30,6 +30,7 @@
     </li>
 </template>
 <script>
+    import config from '../../config';
     export default{
         props:{
             meta:{
@@ -43,7 +44,7 @@
             createCart: async function(){
   
                 let self=this;
-                let {status,data:{code,id}}=await this.$axios.post('http://127.0.0.1:3000/cart/create',{
+                let {status,data:{code,id}}=await this.$axios.post(`http://${config.API}:3000/cart/create`,{
                    params:{
                       id:Math.random().toString().slice(3,9),
                       detail:{

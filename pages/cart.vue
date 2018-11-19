@@ -23,6 +23,7 @@
 </template>
 <script>
 import List from '@/components/cart/list'
+import config from "../config";
     export default{ 
         layout:'default_b',
         data(){
@@ -44,7 +45,7 @@ import List from '@/components/cart/list'
         },
         methods:{
             submit:async function () {
-                let {status,data:{code,id}}=await this.$axios.post('http://127.0.0.1:3000/order/createOrder',{
+                let {status,data:{code,id}}=await this.$axios.post(`http://${config.API}:3000/order/createOrder`,{
                     count:this.cart[0].count,
                     price:this.cart[0].price,
                     id:this.cartNo
@@ -60,7 +61,7 @@ import List from '@/components/cart/list'
             }
         },
         async asyncData(ctx){
-            let {status,data:{code,data:{name,price}}}=await ctx.$axios.post('http://127.0.0.1:3000/cart/getCart',{
+            let {status,data:{code,data:{name,price}}}=await ctx.$axios.post(`http://${config.API}:3000/cart/getCart`,{
                 id:ctx.query.id
             })
             if(status===200&&code===0&&name){

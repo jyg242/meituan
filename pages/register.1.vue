@@ -99,6 +99,7 @@
 <script>
 // 引入md5加密模块
 import CryptoJS from 'crypto-js'
+import config from '../config'
  export default{
         data(){
             return {
@@ -171,7 +172,7 @@ import CryptoJS from 'crypto-js'
               })
               const phone = self.ruleForm.phone;
               if( !namePass && !phonePass ) {
-                self.$axios.post('http://127.0.0.1:3000/users/sendSMS', {phone}).then(({status,data}) => {
+                self.$axios.post(`http://${config.API}:3000/users/sendSMS`, {phone}).then(({status,data}) => {
                   console.log(status)
                   if(true){
                       let count=60;
@@ -211,7 +212,7 @@ import CryptoJS from 'crypto-js'
                 })
                 // 如果用户名和密码都通过表单验证了发送axios请求邮箱验证
                 if(!namePass && !emailPass){
-                  self.$axios.post('http://127.0.0.1:3000/users/verify',{
+                  self.$axios.post(`http://${config.API}:3000/users/verify`,{
                     //对中文进行编码
                     username:encodeURIComponent(self.ruleForm.name),
                     email:self.ruleForm.email
@@ -238,7 +239,7 @@ import CryptoJS from 'crypto-js'
                   // 对ruleForm对象所有属性规则进行验证，全部通过返回true
                   this.$refs['ruleForm'].validate((valid)=>{
                     if(valid){
-                      self.$axios.post('http://127.0.0.1:3000/users/signup',{
+                      self.$axios.post(`http://${config.API}:3000/users/signup`,{
                         username:window.encodeURIComponent(self.ruleForm.name),
                         password:CryptoJS.MD5(self.ruleForm.pwd).toString(),
                         email:self.ruleForm.email,

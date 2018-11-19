@@ -38,6 +38,7 @@
 import Crumbs from '@/components/detail/crumbs'
 import Summa from '@/components/detail/summary'
 import List from '@/components/detail/list'
+import config from '../config';
 export default { 
   components:{
     Crumbs,
@@ -55,7 +56,7 @@ export default {
     ctx.body={
         keyword
     }
-    let {status,data:{product,more:list,login}}=await ctx.$axios.get('http://127.0.0.1:3000/search/product',{
+    let {status,data:{product,more:list,login}}=await ctx.$axios.get(`http://${config.API}:3000/search/product`,{
       params:{
         keyword,
         type,

@@ -20,7 +20,7 @@ import order from './interface/order'
 // 导入geo路由列表
 // import geo from './interface/geo'
 const app = new Koa()
-const host = process.env.HOST || '127.0.0.1'
+    // const host = process.env.NODE_ENV == "production" ? '47.101.142.67' : '127.0.0.1'; //process.env.HOST || '127.0.0.1'
 const port = process.env.PORT || 3000
 
 // 设置签名的cookic秘钥,随便填写两个值
@@ -78,9 +78,9 @@ async function start() {
         })
     })
 
-    app.listen(port, host)
+    app.listen(port)
     consola.ready({
-        message: `Server listening on http://${host}:${port}`,
+        message: `Server listening on http://localhost:${port}`,
         badge: true
     })
 }

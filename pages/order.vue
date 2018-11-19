@@ -60,6 +60,7 @@
 
 <script>
 import List from '@/components/order/list.vue'
+import config from '../config'
 export default {
     layout:'default_b',
   components: {
@@ -107,7 +108,7 @@ export default {
       console.log(this.cur)
   },
   async asyncData(ctx) {
-    let {status,data:{code,list}} = await ctx.$axios.post('http://127.0.0.1:3000/order/getOrders')
+    let {status,data:{code,list}} = await ctx.$axios.post(`http://${config.API}:3000/order/getOrders`)
     if(status===200&&code===0&&list.length){
       return {
         list: list.map(item=>{

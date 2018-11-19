@@ -1,7 +1,7 @@
 {
     "apps": [{
         "name": "H5-VUE",
-        "script": "",
+        "script": "server/index.js",
         "env": {
             "COMMON_VARIABLE": "true"
         },
